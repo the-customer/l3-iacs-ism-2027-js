@@ -17,37 +17,50 @@ const passwordInput = document.querySelector("#password")
 
 const handleSubmit = (e) => {
     e.preventDefault();
-    //1. recuperer les donnees:
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value;
-    
-    if(username.length < 3){
-        // alert("Username must have at least 3 characters!!!");
-        usernameInput.className = "error"
-        //recuperer la balise small de ce champs
-        const parent = usernameInput.parentNode;
-        const small = parent.querySelector('small');
-        small.className = "error"
-        small.innerText = "Username must have at least 3 characters!!!"
-        return;
+
+    checkRequired([usernameInput,passwordInput]);
+    checkLength(usernameInput,3,25);
+    checkLength(passwordInput,6,25);
+}
+
+
+const checkRequired = (inputs) => {
+    inputs.forEach(input => {
+        if(input.value.trim() == ""){
+            showError(input,'is required');
+        }else{
+            showSuccess(input);
+        }
+    });  
+}
+
+
+const checkLength = (input,min,max) => {
+    const taille = input.value.trim().length;
+    if(taille < min){
+        showError(input,`must have at least ${min} characters`)
+    }else if(taille > max){
+        showError(input, `must have less than ${max} characters`)
+    }else{
+        showSuccess(input)
     }
-    if(username.length > 25){
-        // alert("Username must have less than 26 characters!!!");
-        usernameInput.className = "error"
-        //recuperer la balise small de ce champs
-        const parent = usernameInput.parentNode;
-        const small = parent.querySelector('small');
-        small.className = "error"
-        small.innerText = "Username must have less than 26 characters!!!"
-        return;
-    }
-    usernameInput.className = "success"
-    const parent = usernameInput.parentNode;
+}
+
+const showError = (input, msg) => {
+    input.className = "error"
+    //recuperer la balise small de ce champs
+    const parent = input.parentNode;
+    const small = parent.querySelector('small');
+    small.className = "error"
+    small.innerText = `${input.id} ${msg}!!!`
+}
+
+const showSuccess = (input) => {
+    input.className = "success"
+    //recuperer la balise small de ce champs
+    const parent = input.parentNode;
     const small = parent.querySelector('small');
     small.className = ""
-    //2. valider les donnees : les inputs doivent avoir au minimum 6 caracteres pour mot de passe et 3 pour le username
-    //3. Envoyer les donnees
-    console.log("Formulaire soumis!")
 }
 
 form.addEventListener('submit',handleSubmit)
